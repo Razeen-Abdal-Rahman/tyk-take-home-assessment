@@ -45,11 +45,14 @@ for image in "${IMAGES[@]}"; do
         entry="${cve},${pkg},${severity},${version},${fix},\"${description}\""
 
         if [[ -v CONSOLIDATE[$key] ]]; then
-            if [[ "${CONSOLIDATE[$key]}" != *",$image"* ]]; then
-                CONSOLIDATE["$key"]="${CONSOLIDATE[$key]} + $image"
+            current="${CONSOLIDATE[$key]}"
+            base="${current%%,*}"
+            sources="${current#*,}"
+            if [[ "$sources" != *"|$image|"* ]]; then
+                CONSOLIDATE["$key"]="${base},${sources}|$image|"
             fi
         else
-            CONSOLIDATE["$key"]="${entry},$image"
+            CONSOLIDATE["$key"]="${entry},|$image|"
         fi
     done <<< "$results"
 done
