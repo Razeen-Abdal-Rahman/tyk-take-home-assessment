@@ -42,3 +42,12 @@ Make sure you have the following installed on your system:
 3. Run the scanner with the names of the images:
    ```./trivy-scan.sh tykio/midsommar tykio/tyk-dashboard``` 
 4. The output file will be overwritten your report will be saved as ```trivy_scan_report.csv```
+
+---
+
+## 📃TODOs
+
+- I have spotted a small issue with the sources column, the script sometimes outputs the same image name multiple times
+- Containerise the script for use in CI/CD pipelines
+- Add support for JSON or HTML output formats for easier integration with dashboards
+- Add unit tests and logging, this would probably require switching to a Python or Go script
