@@ -40,8 +40,9 @@ for image in "${IMAGES[@]}"; do
     ' "$json_file")
     while IFS=$'\t' read -r cve pkg severity version fixed desc; do
         description=$(echo "$desc" | sed 's/"/""/g' | sed 's/,/\\,/g')
+        fix=$(echo "$fixed" | sed 's/,/\t/g')
         key="$cve"
-        entry="${cve},${pkg},${severity},${version},${fixed},\"${description}\""
+        entry="${cve},${pkg},${severity},${version},${fix},\"${description}\""
 
         if [[ -v CONSOLIDATE[$key] ]]; then
             if [[ "${CONSOLIDATE[$key]}" != *",$image"* ]]; then
