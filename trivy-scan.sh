@@ -41,18 +41,17 @@ for image in "${IMAGES[@]}"; do
     while IFS=$'\t' read -r pkg severity version fixed desc cve; do
         description=$(echo "$desc" | sed 's/"/""/g' | sed 's/,/\\,/g')
         fix=$(echo "$fixed" | sed 's/,/\t/g')
-        key="$cve"
         entry="${pkg},${severity},${version},${fix},\"${description}\",${cve}"
 
-        if [[ -v CONSOLIDATE[$key] ]]; then
-            current="${CONSOLIDATE[$key]}"
+        if [[ -v CONSOLIDATE[$cve] ]]; then
+            current="${CONSOLIDATE[$cve]}"
             base="${current%%,*}"
             sources="${current#*,}"
             if [[ "$sources" != *"|$image|"* ]]; then
-                CONSOLIDATE["$key"]="${base},${sources}|$image|"
+                CONSOLIDATE["$cve"]="${base},${sources}|$image|"
             fi
         else
-            CONSOLIDATE["$key"]="${entry},|$image|"
+            CONSOLIDATE["$cve"]="${entry},|$image|"
         fi
     done <<< "$results"
 done
