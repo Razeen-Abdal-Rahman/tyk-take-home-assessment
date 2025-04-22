@@ -30,19 +30,19 @@ for image in "${IMAGES[@]}"; do
         .Vulnerabilities[]? |
         select(type == "object" and has("VulnerabilityID")) |
         [
-            .VulnerabilityID,
             .PkgName,
             .Severity,
             .InstalledVersion,
             (.FixedVersion // "N/A"),
-            (.Description // "No description") | gsub("[\n\r]"; " ")
+            (.Description // "No description"),
+            .VulnerabilityID
         ] | @tsv
     ' "$json_file")
-    while IFS=$'\t' read -r cve pkg severity version fixed desc; do
+    while IFS=$'\t' read -r pkg severity version fixed desc cve; do
         description=$(echo "$desc" | sed 's/"/""/g' | sed 's/,/\\,/g')
         fix=$(echo "$fixed" | sed 's/,/\t/g')
         key="$cve"
-        entry="${cve},${pkg},${severity},${version},${fix},\"${description}\""
+        entry="${pkg},${severity},${version},${fix},\"${description}\",${cve}"
 
         if [[ -v CONSOLIDATE[$key] ]]; then
             current="${CONSOLIDATE[$key]}"
@@ -57,7 +57,7 @@ for image in "${IMAGES[@]}"; do
     done <<< "$results"
 done
 
-echo "CVE ID,Package Name,Severity,Version,Fixed in version,Description,Source(image name)" > "$OUTPUT_CSV"
+echo "Package Name,Severity,Version,Fixed in version,Description,CVE ID,Source(image name)" > "$OUTPUT_CSV"
 
 for src in "${CONSOLIDATE[@]}"; do
     echo "$src" >> "$OUTPUT_CSV"
