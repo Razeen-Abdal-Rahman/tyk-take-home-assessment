@@ -47,7 +47,6 @@ Make sure you have the following installed on your system:
 
 ## 📃TODOs
 
-- I have spotted a small issue with the sources column, the script sometimes outputs the same image name multiple times
 - Containerise the script for use in CI/CD pipelines
 - Add support for JSON or HTML output formats for easier integration with dashboards
 - Add unit tests and logging, this would probably require switching to a Python or Go script
